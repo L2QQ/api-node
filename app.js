@@ -4,11 +4,18 @@ const app = express()
 const morgan = require('morgan')
 app.use(morgan('tiny'))
 
-const info = require('./routes/info')
-app.use(info)
+app.use(require('./routes/info'))
+app.use(require('./routes/market'))
+app.use(require('./routes/klines'))
+app.use(require('./routes/ticker'))
 
-const market = require('./routes/market')
-app.use(market)
+app.use((req, res, next) => {
+    next()
+})
+
+app.use(require('./routes/trade'))
+app.use(require('./routes/orders'))
+app.use(require('./routes/user'))
 
 const APIError = require('./errors')
 

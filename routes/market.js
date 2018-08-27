@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+
 const errors = require('../errors')
 
 router.get('/api/v1/depth', (req, res) => {
@@ -15,6 +16,19 @@ router.get('/api/v1/depth', (req, res) => {
         bids: [],
         asks: []
     })
+})
+
+router.get('/api/v1/trades', (req, res) => {
+    res.send([
+        {
+            "id": 28457,
+            "price": "4.00000100",
+            "qty": "12.00000000",
+            "time": 1499865549590,
+            "isBuyerMaker": true,
+            "isBestMatch": true
+        }
+    ])
 })
 
 module.exports = router
