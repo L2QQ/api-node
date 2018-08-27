@@ -1,0 +1,23 @@
+{
+  "name": "api-node",
+  "version": "0.1.0",
+  "description": "REST API",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/L2QQ/api-node.git"
+  },
+  "keywords": [
+    "api",
+    "express"
+  ],
+  "author": "Vitaly Berg <bergusman@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/L2QQ/api-node/issues"
+  },
+  "homepage": "https://github.com/L2QQ/api-node#readme"
+}
