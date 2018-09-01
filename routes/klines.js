@@ -14,6 +14,8 @@ function klines(symbol, interval, from, to, limit) {
 }
 
 router.get('/api/v1/klines', (req, res) => {
+    Math.max(Math.min(parseInt(req.query.limit) || 500, 1000), 0)
+
     klines(req.query.symbol, req.query.interval).then(klines => {
         res.send(klines.map(kline => {
             return kline.concat(['0'])
