@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const errors = require('../errors')
+const errors = require('../../errors')
 
 router.get('/api/v1/depth', (req, res) => {
     if (req.query.symbol === undefined) {
@@ -19,6 +19,16 @@ router.get('/api/v1/depth', (req, res) => {
 })
 
 router.get('/api/v1/trades', (req, res) => {
+    if (req.query.symbol === undefined) {
+        throw errors.MANDATORY_PARAM_EMPTY_OR_MALFORMED('symbol')
+    }
+    if (req.query.symbol.length === 0) {
+        throw errors.PARAM_EMPTY('symbol')
+    }
+    
+    req.config.then(config => {
+
+    })
     res.send([
         {
             "id": 28457,

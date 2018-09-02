@@ -4,10 +4,30 @@ const app = express()
 const morgan = require('morgan')
 app.use(morgan('tiny'))
 
-app.use(require('./routes/info'))
-app.use(require('./routes/market'))
-app.use(require('./routes/klines'))
-app.use(require('./routes/ticker'))
+app.use(require('./src/routes/ping'))
+
+const rp = require('request-promise-native')
+
+const commanderPort = parseInt(process.env.PORT) || 9040
+
+app.config = rp({
+    uri: `http://localhost:${commanderPort}`,
+    json: true
+})
+
+app.use((req, res, next) => {
+    app.config.then(config => {
+        req.config = config
+        next()
+    }).catch(err => {
+        next(err)
+    })
+})
+
+app.use(require('./src/routes/info'))
+app.use(require('./src/routes/market'))
+app.use(require('./src/routes/klines'))
+app.use(require('./src/routes/ticker'))
 
 const pgp = require('pg-promise')()
 app.db = pgp({
@@ -33,13 +53,15 @@ const trade = () => {
 
 }
 
-app.use(require('./routes/trade'))
-app.use(require('./routes/orders'))
-app.use(require('./routes/user'))
+app.use(require('./src/routes/trade'))
+app.use(require('./src/routes/orders'))
+app.use(require('./src/routes/user'))
 
 const APIError = require('./errors')
 
 app.use((err, req, res, next) => {
+    console.log(err)
+
     if (err instanceof APIError) {
         res.status(err.status).send({
             code: err.code,

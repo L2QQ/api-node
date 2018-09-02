@@ -11,16 +11,4 @@ router.get('/api/v1/time', (req, res) => {
     })
 })
 
-router.get('/api/v1/exchangeInfo', (req, res) => {
-    res.send({
-        timezone: 'UTC',
-        serverTime: Date.now(),
-        exchangeFilters: [],
-        rateLimits: [],
-        symbols: [
-
-        ]
-    })
-})
-
 module.exports = router
