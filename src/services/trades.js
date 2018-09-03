@@ -13,11 +13,19 @@ module.exports = class Trades {
         })
     }
 
-    lastTrades() {
-
+    lastTrades(symbol, limit) {
+        return rp({
+            uri: `http://localhost:${this.port}/trades/last`,
+            qs: { symbol, limit },
+            json: true
+        })
     }
 
-    historyTrades() {
-
+    historyTrades(symbol, limit, fromId) {
+        return rp({
+            uri: `http://localhost:${this.port}/trades/history`,
+            qs: { symbol, limit, fromId },
+            json: true
+        })
     }
 }

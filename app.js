@@ -13,22 +13,23 @@ const commanderPort = parseInt(process.env.PORT) || 9040
 app.config = rp({
     uri: `http://localhost:${commanderPort}`,
     json: true
+}).then((config) => {
+    config.marketsBySymbols = config.markets.reduce((acc, cur) => {
+        acc[cur.symbol] = cur
+        return acc
+    }, {})
+
+    app.services = {}
+    app.services.trades = new Trades(config.klines.port)
+    return config
 })
 
 const Trades = require('./src/services/trades')
 
 app.use((req, res, next) => {
-    app.config.then(config => {
-        config.marketsBySymbols = config.markets.reduce((acc, cur) => {
-            acc[cur.symbol] = cur
-            return acc
-        }, {})
-
-        console.log(config.marketsBySymbols)
-
-        req.services.trades = new Trades(config.klines.port)
-
+    app.config.then((config) => {
         req.config = config
+        req.services = app.services
         next()
     }).catch(err => {
         next(err)
@@ -79,7 +80,7 @@ app.use((err, req, res, next) => {
             msg: err.message
         })
     }
-    res.status(500).send(err)
+    res.status(500).send(err.message)
 })
 
 app.listen(9000, () => {

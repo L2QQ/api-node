@@ -5,14 +5,14 @@ const router = express.Router()
 
 const parse = require('./utils/parse')
 
-router.get('/api/v1/depth', (req, res) => {
-    if (req.query.symbol === undefined) {
-        throw errors.MANDATORY_PARAM_EMPTY_OR_MALFORMED('symbol')
-    }
-    if (req.query.symbol.length === 0) {
-        throw errors.PARAM_EMPTY('symbol')
-    }
-
+/**
+ * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#market-data-endpoints
+ */
+router.get('/api/v1/depth', [
+    parse.symbol,
+    parse.limit(100, 1000)
+], (req, res) => {
+    // TODO: check limit
     res.send({
         lastUpdateId: 3,
         bids: [],
@@ -20,26 +20,48 @@ router.get('/api/v1/depth', (req, res) => {
     })
 })
 
-const rp = require('request-promise-native')
-
-function trades(port, symbol, limit) {
-    return rp({
-        uri: `http://localhost:${port}/trades/last`,
-        qs: {
-            symbol, limit
-        },
-        json: true
-    })
-}
-
+/**
+ * Recent trades list.
+ * 
+ * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#recent-trades-list
+ * @weight 1
+ */
 router.get('/api/v1/trades', [
     parse.symbol,
-    parse.limit
+    parse.limit(500, 1000)
 ], (req, res, next) => {
-    trades(
-        req.config.klines.port,
+    req.services.trades.lastTrades(
         req.query.symbol, 
         req.query.limit
+    ).then((trades) => {
+        res.send(trades.map(trade => ({
+            id: trade.id,
+            price: Big(trade.price).toFixed(req.market.quotePrecision),
+            qty: Big(trade.qty).toFixed(req.market.basePrecision),
+            time: trade.time,
+            isBuyerMaker: trade.is_buyer_maker,
+            isBestMatch: true
+        })))
+    }).catch((err) => {
+        next(err)
+    })
+})
+
+/**
+ * Get older trades.
+ * 
+ * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#old-trade-lookup-market_data
+ * @weight 5
+ */
+router.get('/api/v1/historyTrades', [
+    parse.symbol,
+    parse.limit(500, 1000),
+    parse.optionalId('fromId')
+], (req, res, next) => {
+    req.services.trades.historyTrades(
+        req.query.symbol, 
+        req.query.limit,
+        req.query.fromId
     ).then((trades) => {
         res.send(trades.map(trade => ({
             id: trade.id,

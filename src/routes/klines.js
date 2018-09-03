@@ -1,15 +1,3 @@
-const rp = require('request-promise-native')
-
-function bars(port, symbol, interval, from, to, limit) {
-    return rp({
-        uri: `http://localhost:${port}/ohlc`,
-        qs: {
-            symbol, interval, from, to, limit
-        },
-        json: true
-    })
-}
-
 const Big = require('big.js')
 
 const express = require('express')
@@ -17,15 +5,20 @@ const router = express.Router()
 
 const parse = require('./utils/parse')
 
+/**
+ * Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
+ * 
+ * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#klinecandlestick-data
+ * @weight 1
+ */
 router.get('/api/v1/klines', [
     parse.symbol,
     parse.interval,
     parse.time('startTime'),
     parse.time('endTime'),
-    parse.limit
+    parse.limit(500, 1000)
 ], (req, res, next) => {
-    bars(
-        req.config.klines.port,
+    req.services.trades.bars(
         req.query.symbol,
         req.query.interval,
         req.query.startTime,

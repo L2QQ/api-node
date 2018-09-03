@@ -18,13 +18,19 @@ module.exports = {
         }
         next()
     },
-    limit: (req, res, next) => {
-
-        next()
+    limit: (def, max) => {
+        return (req, res, next) => {
+            next()
+        }
     },
     time: (param) => {
         return (req, res, next) => {
             next()
         }
     },
+    optionalId: (param) => {
+        return (req, res, next) => {
+            next()
+        }
+    }
 }

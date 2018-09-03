@@ -6,8 +6,24 @@ router.get('/api/v1/exchangeInfo', (req, res) => {
         timezone: 'UTC',
         serverTime: Date.now(),
         exchangeFilters: [],
-        rateLimits: [],
-        symbols: config.markets.map(market => ({
+        rateLimits: [
+            {
+                rateLimitType: 'REQUEST_WEIGHT',
+                interval: 'MINUTE',
+                limit: 1200
+            },
+            {
+                rateLimitType: 'ORDERS',
+                interval: 'SECOND',
+                limit: 10
+            },
+            {
+                rateLimitType: 'ORDERS',
+                interval: 'DAY',
+                limit: 100000
+            }
+        ],
+        symbols: req.config.markets.map(market => ({
             symbol: market.symbol,
             status: 'TRADING',
             baseAsset: market.base,
