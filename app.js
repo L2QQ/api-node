@@ -15,8 +15,19 @@ app.config = rp({
     json: true
 })
 
+const Trades = require('./src/services/trades')
+
 app.use((req, res, next) => {
     app.config.then(config => {
+        config.marketsBySymbols = config.markets.reduce((acc, cur) => {
+            acc[cur.symbol] = cur
+            return acc
+        }, {})
+
+        console.log(config.marketsBySymbols)
+
+        req.services.trades = new Trades(config.klines.port)
+
         req.config = config
         next()
     }).catch(err => {

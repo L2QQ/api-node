@@ -22,4 +22,28 @@ module.exports = class APIError extends Error {
             `Parameter '${param}' was empty`
         )
     }
+
+    static BAD_SYMBOL(param) {
+        return new APIError(
+            400,
+            -1121,
+            `Invalid symbol`
+        )
+    }
+
+    static BAD_INTERVAL(param) {
+        return new APIError(
+            400,
+            -1120,
+            `Invalid interval`
+        )
+    }
+
+    static ILLEGAL_CHARS(param) {
+        return new APIError(
+            400,
+            -1100,
+            `Illegal characters found in a parameter`
+        )
+    }
 }

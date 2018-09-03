@@ -1,8 +1,3 @@
-const Big = require('big.js')
-
-const express = require('express')
-const router = express.Router()
-
 const rp = require('request-promise-native')
 
 function bars(port, symbol, interval, from, to, limit) {
@@ -15,19 +10,35 @@ function bars(port, symbol, interval, from, to, limit) {
     })
 }
 
-router.get('/api/v1/klines', (req, res, next) => {
-    
+const Big = require('big.js')
 
-    Math.max(Math.min(parseInt(req.query.limit) || 500, 1000), 0)
+const express = require('express')
+const router = express.Router()
 
-    bars(req.config.klines.port, req.query.symbol, req.query.interval).then((bars) => {
+const parse = require('./utils/parse')
+
+router.get('/api/v1/klines', [
+    parse.symbol,
+    parse.interval,
+    parse.time('startTime'),
+    parse.time('endTime'),
+    parse.limit
+], (req, res, next) => {
+    bars(
+        req.config.klines.port,
+        req.query.symbol,
+        req.query.interval,
+        req.query.startTime,
+        req.query.endTime,
+        req.query.limit
+    ).then((bars) => {
         bars.forEach((bar) => {
-            bar[1] = Big(bar[1]).toFixed(8)
-            bar[2] = Big(bar[2]).toFixed(8)
-            bar[3] = Big(bar[3]).toFixed(8)
-            bar[4] = Big(bar[4]).toFixed(8)
-            bar[5] = Big(bar[5]).toFixed(8)
-            bar[6] = Big(bar[6]).toFixed(8)
+            bar[1] = Big(bar[1]).toFixed(req.market.quotePrecision)
+            bar[2] = Big(bar[2]).toFixed(req.market.quotePrecision)
+            bar[3] = Big(bar[3]).toFixed(req.market.quotePrecision)
+            bar[4] = Big(bar[4]).toFixed(req.market.quotePrecision)
+            bar[5] = Big(bar[5]).toFixed(req.market.basePrecision)
+            bar[6] = Big(bar[6]).toFixed(req.market.quotePrecision)
         })
         res.send(bars)
     }).catch((err) => {
