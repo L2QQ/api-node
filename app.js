@@ -6,14 +6,11 @@ app.use(morgan('tiny'))
 
 app.use(require('./src/routes/ping'))
 
-const rp = require('request-promise-native')
+const Trades = require('./src/services/trades')
 
-const commanderPort = parseInt(process.env.PORT) || 9040
-
-app.config = rp({
-    uri: `http://localhost:${commanderPort}`,
-    json: true
-}).then((config) => {
+const Commander = require('./src/services/commander')
+const commander = new Commander(parseInt(process.env.PORT) || 9040)
+commander.config().then((config) => {
     config.marketsBySymbols = config.markets.reduce((acc, cur) => {
         acc[cur.symbol] = cur
         return acc
@@ -24,12 +21,17 @@ app.config = rp({
     return config
 })
 
-const Trades = require('./src/services/trades')
+const pgp = require('pg-promise')()
+app.db = pgp({
+    database: 'L2QQ'
+})
+
 
 app.use((req, res, next) => {
     app.config.then((config) => {
         req.config = config
         req.services = app.services
+        req.db = app.db
         next()
     }).catch(err => {
         next(err)
@@ -40,31 +42,7 @@ app.use(require('./src/routes/info'))
 app.use(require('./src/routes/market'))
 app.use(require('./src/routes/klines'))
 app.use(require('./src/routes/ticker'))
-
-const pgp = require('pg-promise')()
-app.db = pgp({
-    database: 'L2QQ'
-})
-
-app.use((req, res, next) => {
-    const apiKey = req.header('X-MBX-APIKEY')
-    if (!apiKey) {
-        console.error('Fire')
-        throw Error('Need api key')
-    }
-    
-    
-    const rows = req.app.db.any('SELECT * FROM apikeys WHERE key = $1', [key])
-    
-    console.log(rows)
-
-    next()
-})
-
-const trade = () => {
-
-}
-
+app.use(require('./src/security'))
 app.use(require('./src/routes/trade'))
 app.use(require('./src/routes/orders'))
 app.use(require('./src/routes/user'))
