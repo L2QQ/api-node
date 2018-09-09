@@ -1,3 +1,6 @@
+require('colors')
+console.log('🤖 REST API'.bold)
+
 const express = require('express')
 const app = express()
 
@@ -6,11 +9,15 @@ app.use(morgan('tiny'))
 
 app.use(require('./src/routes/ping'))
 
-const Trades = require('./src/services/trades')
+app.services = {}
 
-const Commander = require('./src/services/commander')
-const commander = new Commander(parseInt(process.env.PORT) || 9040)
-commander.config().then((config) => {
+const Commander = require('../commander-node/src/services/wrappers/commander')
+const commander = new Commander(parseInt(process.env.COMMANDER_PORT) || 9040)
+commander.on('config', (config) => {
+    console.log('Config changed'.magenta)
+
+
+    /*
     config.marketsBySymbols = config.markets.reduce((acc, cur) => {
         acc[cur.symbol] = cur
         return acc
@@ -18,20 +25,13 @@ commander.config().then((config) => {
 
     app.services = {}
     app.services.trades = new Trades(config.klines.port)
-    return config
+    */
 })
-
-const pgp = require('pg-promise')()
-app.db = pgp({
-    database: 'L2QQ'
-})
-
 
 app.use((req, res, next) => {
-    app.config.then((config) => {
+    commander.config().then((config) => {
         req.config = config
         req.services = app.services
-        req.db = app.db
         next()
     }).catch(err => {
         next(err)
@@ -42,12 +42,12 @@ app.use(require('./src/routes/info'))
 app.use(require('./src/routes/market'))
 app.use(require('./src/routes/klines'))
 app.use(require('./src/routes/ticker'))
-app.use(require('./src/security'))
+//app.use(require('./src/security'))
 app.use(require('./src/routes/trade'))
 app.use(require('./src/routes/orders'))
 app.use(require('./src/routes/user'))
 
-const APIError = require('./errors')
+const APIError = require('./src/errors')
 
 app.use((err, req, res, next) => {
     console.log(err)
@@ -61,6 +61,10 @@ app.use((err, req, res, next) => {
     res.status(500).send(err.message)
 })
 
-app.listen(9000, () => {
-    console.log('Listen')
+commander.once('config', () => {
+    console.log('Took config once'.red)
+    const port = parseInt(process.env.PORT) || 9000
+    app.listen(port, () => {
+        console.log('Listening on:', String(port).green)
+    })
 })

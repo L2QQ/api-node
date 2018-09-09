@@ -1,4 +1,4 @@
-const errors = require('../../../errors')
+const errors = require('../../errors')
 
 module.exports = {
     symbol: (req, res, next) => {
