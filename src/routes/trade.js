@@ -1,15 +1,18 @@
 const express = require('express')
 const router = express.Router()
 
-router.post('/api/v3/order', (req, res) => {
+const security = require('../security')
+const parse = require('./utils/parse')
+
+router.post('/api/v3/order', [
+    security.TRADE
+], (req, res) => {
     res.send({})
 })
 
-router.get('/api/v3/order', (req, res) => {
-    res.send({})
-})
-
-router.delete('/api/v3/order', (req, res) => {
+router.delete('/api/v3/order', [
+    security.TRADE
+], (req, res) => {
     res.send({})
 })
 

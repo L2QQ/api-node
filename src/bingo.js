@@ -1,3 +1,5 @@
+
+/*
 module.exports = (req, res, next) => {
     const apiKey = req.header('apikey')
     if (!apiKey) {
@@ -75,3 +77,4 @@ app.use((req, res, next) => {
     next()
 })
 
+*/

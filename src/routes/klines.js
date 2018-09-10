@@ -3,6 +3,7 @@ const Big = require('big.js')
 const express = require('express')
 const router = express.Router()
 
+const security = require('../security')
 const parse = require('./utils/parse')
 
 /**
@@ -12,13 +13,14 @@ const parse = require('./utils/parse')
  * @weight 1
  */
 router.get('/api/v1/klines', [
+    security.NONE,
     parse.symbol,
     parse.interval,
     parse.time('startTime'),
     parse.time('endTime'),
     parse.limit(500, 1000)
 ], (req, res, next) => {
-    req.services.trades.bars(
+    req.services.ohlcv.bars(
         req.query.symbol,
         req.query.interval,
         req.query.startTime,
@@ -34,10 +36,7 @@ router.get('/api/v1/klines', [
             bar[6] = Big(bar[6]).toFixed(req.market.quotePrecision)
         })
         res.send(bars)
-    }).catch((err) => {
-        // TODO: wrap error
-        next(err)
-    })
+    }).catch(next)
 })
 
 module.exports = router

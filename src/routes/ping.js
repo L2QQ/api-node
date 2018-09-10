@@ -1,13 +1,18 @@
 const express = require('express')
 const router = express.Router()
 
+const security = require('../security')
+const parse = require('./utils/parse')
+
 /**
  * Test connectivity to the Rest API.
  * 
  * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#test-connectivity
  * @weight 1
  */
-router.get('/api/v1/ping', (req, res) => {
+router.get('/api/v1/ping', [
+    security.NONE
+], (req, res) => {
     res.send({})
 })
 
@@ -17,7 +22,9 @@ router.get('/api/v1/ping', (req, res) => {
  * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#check-server-time
  * @weight 1
  */
-router.get('/api/v1/time', (req, res) => {
+router.get('/api/v1/time', [
+    security.NONE
+], (req, res) => {
     res.send({
         serverTime: Date.now()
     })

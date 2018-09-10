@@ -1,15 +1,30 @@
 const express = require('express')
 const router = express.Router()
 
-router.get('/api/v3/openOrders', (req, res) => {
+const security = require('../security')
+const parse = require('./utils/parse')
+
+router.get('/api/v3/order', [
+    security.USER_DATA
+], (req, res) => {
     res.send({})
 })
 
-router.get('/api/v3/allOrders', (req, res) => {
+router.get('/api/v3/openOrders', [
+    security.USER_DATA
+], (req, res) => {
     res.send({})
 })
 
-router.get('/api/v3/myTrades', (req, res) => {
+router.get('/api/v3/allOrders', [
+    security.USER_DATA
+], (req, res) => {
+    res.send({})
+})
+
+router.get('/api/v3/myTrades', [
+    security.USER_DATA
+], (req, res) => {
     res.send({})
 })
 

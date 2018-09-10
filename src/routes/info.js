@@ -1,7 +1,12 @@
 const express = require('express')
 const router = express.Router()
 
-router.get('/api/v1/exchangeInfo', (req, res) => {
+const security = require('../security')
+const parse = require('./utils/parse')
+
+router.get('/api/v1/exchangeInfo', [
+    security.NONE
+], (req, res) => {
     res.send({
         timezone: 'UTC',
         serverTime: Date.now(),
