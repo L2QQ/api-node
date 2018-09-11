@@ -5,6 +5,7 @@ const router = express.Router()
 
 const security = require('../security')
 const parse = require('./utils/parse')
+const format = require('./utils/format')
 
 /**
  * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#market-data-endpoints
@@ -12,16 +13,24 @@ const parse = require('./utils/parse')
 router.get('/api/v1/depth', [
     security.NONE,
     parse.symbol,
-    parse.limit(100, 1000)
+    parse.limit(5, 1000)
 ], (req, res, next) => {
+    function formatLevel(level) {
+        return [
+            Big(level[0]).toFixed(req.market.quotePrecision),
+            Big(level[1]).toFixed(req.market.basePrecision),
+            []
+        ]
+    }
+
     req.services.market.depth(
         req.query.symbol,
         req.query.limit
     ).then((depth) => {
         res.send({
-            lastUpdateId: 3,
-            bids: [],
-            asks: []
+            lastUpdateId: depth.lastUpdateId,
+            bids: depth.bids.map(formatLevel),
+            asks: depth.asks.map(formatLevel)
         })
     }).catch(next)
 })
@@ -37,18 +46,11 @@ router.get('/api/v1/trades', [
     parse.symbol,
     parse.limit(500, 1000)
 ], (req, res, next) => {
-    req.services.trades.lastTrades(
+    req.services.market.trades(
         req.query.symbol,
         req.query.limit
     ).then((trades) => {
-        res.send(trades.map(trade => ({
-            id: trade.id,
-            price: Big(trade.price).toFixed(req.market.quotePrecision),
-            qty: Big(trade.qty).toFixed(req.market.basePrecision),
-            time: trade.time,
-            isBuyerMaker: trade.is_buyer_maker,
-            isBestMatch: true
-        })))
+        res.send(trades.map(format.trade(req.market)))
     }).catch(next)
 })
 

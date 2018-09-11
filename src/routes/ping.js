@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 
 const security = require('../security')
-const parse = require('./utils/parse')
 
 /**
  * Test connectivity to the Rest API.

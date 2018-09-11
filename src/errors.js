@@ -63,12 +63,20 @@ module.exports = class APIError extends Error {
      * 11xx
      */
 
-    static ILLEGAL_CHARS(param) {
-        return new APIError(
-            400,
-            -1100,
-            `Illegal characters found in a parameter`
-        )
+    static ILLEGAL_CHARS(param, regexp) {
+        if (param && regexp) {
+            return new APIError(
+                400,
+                -1100,
+                `Illegal characters found in parameter '${param}'; legal range is '${regexp}'.`
+            )
+        } else {
+            return new APIError(
+                400,
+                -1100,
+                `Illegal characters found in a parameter`
+            )
+        }
     }
 
     static TOO_MANY_PARAMETERS() {
@@ -158,15 +166,23 @@ module.exports = class APIError extends Error {
     }
 
     static NO_SUCH_ORDER() {
-
+        
     }
 
     static BAD_API_KEY_FMT() {
-
+        return new APIError(
+            401,
+            -2014,
+            `API-key format invalid.`
+        )
     }
 
     static REJECTED_MBX_KEY() {
-
+        return new APIError(
+            401,
+            -2015,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static NO_TRADING_WINDOW() {

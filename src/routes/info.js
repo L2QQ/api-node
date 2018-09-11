@@ -2,8 +2,13 @@ const express = require('express')
 const router = express.Router()
 
 const security = require('../security')
-const parse = require('./utils/parse')
 
+/**
+ * Current exchange trading rules and symbol information
+ * 
+ * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#exchange-information
+ * @weight 1
+ */
 router.get('/api/v1/exchangeInfo', [
     security.NONE
 ], (req, res) => {

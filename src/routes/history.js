@@ -5,6 +5,7 @@ const router = express.Router()
 
 const sequrity = require('../security')
 const parse = require('./utils/parse')
+const format = require('./utils/format')
 
 /**
  * Get older trades.
@@ -18,19 +19,12 @@ router.get('/api/v1/historicalTrades', [
     parse.limit(500, 1000),
     parse.optionalId('fromId')
 ], (req, res, next) => {
-    req.services.trades.historyTrades(
+    req.services.trades.trades(
         req.query.symbol,
         req.query.limit,
         req.query.fromId
     ).then((trades) => {
-        res.send(trades.map(trade => ({
-            id: trade.id,
-            price: Big(trade.price).toFixed(req.market.quotePrecision),
-            qty: Big(trade.qty).toFixed(req.market.basePrecision),
-            time: trade.time,
-            isBuyerMaker: trade.is_buyer_maker,
-            isBestMatch: true
-        })))
+        res.send(trades.map(format.trade(req.market)))
     }).catch(next)
 })
 

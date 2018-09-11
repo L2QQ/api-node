@@ -13,6 +13,14 @@ module.exports = {
         next()
     },
 
+    optionalSymbol: (req, res, next) => {
+        next()
+    },
+
+    orderIdOrClientOrderId: (req, res, next) => {
+        next()
+    },
+
     interval: (req, res, next) => {
         if (req.query.interval === undefined) {
             throw errors.MANDATORY_PARAM_EMPTY_OR_MALFORMED('interval')
@@ -42,3 +50,12 @@ module.exports = {
         next()
     }
 }
+
+parse.symbol,
+parse.side,
+parse.type,
+parse.optionalTimeInForce,
+parse.quantity,
+parse.optionalPrice,
+parse.optionalClientOrderId,
+parse.newOrderRespType
