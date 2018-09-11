@@ -48,14 +48,33 @@ module.exports = {
 
     listenKey: (req, res, next) => {
         next()
+    }, 
+
+    orderType: (req, res, next) => {
+        next()
+    }, 
+
+    orderSide: (req, res, next) => {
+        next()
+    },
+
+    optionalTimeInForce: (req, res, next) => {
+        next()
+    }, 
+
+    quantity: (req, res, next) => {
+        next()
+    }, 
+
+    optionalPrice: (req, res, next) => {
+        next()
+    }, 
+
+    optionalClientOrderId: (req, res, next) => {
+        next()
+    }, 
+
+    newOrderRespType: (req, res, next) => {
+        next()
     }
 }
-
-parse.symbol,
-parse.side,
-parse.type,
-parse.optionalTimeInForce,
-parse.quantity,
-parse.optionalPrice,
-parse.optionalClientOrderId,
-parse.newOrderRespType

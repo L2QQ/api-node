@@ -12,5 +12,11 @@ module.exports = {
                 isBestMatch: true
             }
         }
+    },
+    
+    depth: (market) => {
+        return (depth) => {
+            
+        }
     }
 }

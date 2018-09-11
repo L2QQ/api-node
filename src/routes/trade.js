@@ -12,8 +12,8 @@ const parse = require('./utils/parse')
 router.post('/api/v3/order', [
     security.TRADE,
     parse.symbol,
-    parse.side,
-    parse.type,
+    parse.orderSide,
+    parse.orderType,
     parse.optionalTimeInForce,
     parse.quantity,
     parse.optionalPrice,
