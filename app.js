@@ -42,6 +42,23 @@ app.use((req, res, next) => {
     })
 })
 
+app.use((req, res, next) => {
+    if (!req.timestamp) {
+        return next()
+    }
+
+    const timestamp = parseInt(req.timestamp)
+
+    const recvWindow = parseInt(req.query.recvWindow) || 5000
+    const serverTime = Date.now()
+
+    if (timestamp < (serverTime + 1000) && (serverTime - timestamp) <= recvWindow) {
+        next()
+    } else {
+        next(new Error())
+    }
+})
+
 app.use(require('./src/routes/ping'))
 app.use(require('./src/routes/info'))
 app.use(require('./src/routes/market'))
@@ -65,7 +82,7 @@ app.use((err, req, res, next) => {
     console.log(err)
 
     if (err instanceof APIError) {
-        res.status(err.status).send({
+        return res.status(err.status).send({
             code: err.code,
             msg: err.message
         })
