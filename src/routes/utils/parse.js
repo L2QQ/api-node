@@ -51,6 +51,16 @@ module.exports = {
     }, 
 
     orderType: (req, res, next) => {
+        if (req.query.type === undefined) {
+            throw errors.MANDATORY_PARAM_EMPTY_OR_MALFORMED('type')
+        }
+        if (req.query.type.length === '') {
+            throw errors.PARAM_EMPTY('type')
+        }
+        if (!['MARKET', 'LIMIT'].includes(req.query.type)) {
+
+        }
+        
         next()
     }, 
 

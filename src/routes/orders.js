@@ -11,8 +11,15 @@ router.get('/api/v3/order', [
     security.USER_DATA,
     parse.symbol,
     parse.orderIdOrClientOrderId
-], (req, res) => {
-    res.send({})
+], (req, res, next) => {
+
+    if (req.query.orderId) {
+
+    } else if (req.query.clientOrderId)
+
+    req.services.orders.openOrders().then((orders) => {
+        res.send(orders)
+    }).catch(next)
 })
 
 /**
@@ -21,8 +28,10 @@ router.get('/api/v3/order', [
 router.get('/api/v3/openOrders', [
     security.USER_DATA,
     parse.optionalSymbol
-], (req, res) => {
-    res.send({})
+], (req, res, next) => {
+    req.services.orders.openOrders(req.userId, req.query.symbol).then((orders) => {
+        res.send(orders)
+    }).catch(next)
 })
 
 /**
@@ -31,8 +40,10 @@ router.get('/api/v3/openOrders', [
 router.get('/api/v3/allOrders', [
     security.USER_DATA,
     parse.symbol
-], (req, res) => {
-    res.send({})
+], (req, res, next) => {
+    req.services.orders.allOrders(req.userId, req.query.symbol).then((orders) => {
+        res.send(orders)
+    }).catch(next)
 })
 
 /**
@@ -41,8 +52,10 @@ router.get('/api/v3/allOrders', [
 router.get('/api/v3/myTrades', [
     security.USER_DATA,
     parse.symbol
-], (req, res) => {
-    res.send({})
+], (req, res, next) => {
+    req.services.orders.trades(req.userId, req.query.symbol).then((orders) => {
+        res.send(orders)
+    }).catch(next)
 })
 
 module.exports = router
