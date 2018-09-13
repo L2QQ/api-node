@@ -21,23 +21,27 @@ router.post('/api/v3/order', [
     parse.optStopPrice,
     parse.optIcebergQty,
     parse.optNewOrderRespType,
-    parse.tradeAdditionalMandatory
+    parse.tradeAdditionalMandatory,
+    parse.optSignedMessage
 ], (req, res, next) => {
     const q = req.query
     switch (q.type) {
         case 'MARKET':
-            req.services.trader.market(q.userId, q.symbol, q.side, q.quantity, q.newClientOrderId, q.newOrderRespType).then((resp) => {
+            req.services.trader.market(q.userId, q.symbol, q.side, q.quantity, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
                 console.log(resp)
+                res.send(resp)
             }).catch(next)
             break
         case 'LIMIT':
-            req.services.trader.limit(q.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType).then((resp) => {
+            req.services.trader.limit(q.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
                 console.log(resp)
+                res.send(resp)
             }).catch(next)
             break
         case 'LIMIT_MAKER':
-            req.services.trader.limitMaker(q.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType).then((resp) => {
+            req.services.trader.limitMaker(q.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
                 console.log(resp)
+                res.send(resp)
             }).catch(next)
             break
     }

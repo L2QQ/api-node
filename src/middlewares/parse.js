@@ -212,5 +212,23 @@ module.exports = {
     listenKey(req, res, next) {
         mandatory(req.query, 'listenKey', /^[a-zA-Z0-9]{1,60}$/)
         next()
+    },
+
+    optSignedMessage(req, res, next) {
+        optional(req.query, 'signedMessage', /^[A-Fa-f0-9]{2,120}$/)
+        next()
+    },
+
+    address(req, res, next) {
+        mandatory(req.query, 'address', /^0x[A-Fa-f0-9]{40}$/)
+        next()
+    },
+
+    blockchain(req, res, next) {
+        mandatory(req.query, 'blockchain', /^[A-Z0-9_]{10}$/)
+        if (!['ETH', 'QTUM'].includes(req.query.blockchain)) {
+            throw errors.INVALID_PARAMETER()
+        }
+        next()
     }
 }

@@ -6,7 +6,7 @@ const app = express()
 
 app.services = {}
 
-const services = require('../services-node/src/services/wrappers')
+const services = require('../services-node/src/wrappers')
 const commander = new services.Commander(parseInt(process.env.COMMANDER_PORT) || 9040)
 commander.on('config', (config) => {
     console.log('Config changed'.magenta)
