@@ -27,19 +27,19 @@ router.post('/api/v3/order', [
     const q = req.query
     switch (q.type) {
         case 'MARKET':
-            req.services.trader.market(q.userId, q.symbol, q.side, q.quantity, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
+            req.services.trader.market(req.userId, q.symbol, q.side, q.quantity, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
                 console.log(resp)
                 res.send(resp)
             }).catch(next)
             break
         case 'LIMIT':
-            req.services.trader.limit(q.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
+            req.services.trader.limit(req.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
                 console.log(resp)
                 res.send(resp)
             }).catch(next)
             break
         case 'LIMIT_MAKER':
-            req.services.trader.limitMaker(q.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
+            req.services.trader.limitMaker(req.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
                 console.log(resp)
                 res.send(resp)
             }).catch(next)
