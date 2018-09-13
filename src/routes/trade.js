@@ -20,9 +20,27 @@ router.post('/api/v3/order', [
     parse.optNewClientOrderId,
     parse.optStopPrice,
     parse.optIcebergQty,
-    parse.optNewOrderRespType
-], (req, res) => {
-    res.send({})
+    parse.optNewOrderRespType,
+    parse.tradeAdditionalMandatory
+], (req, res, next) => {
+    const q = req.query
+    switch (q.type) {
+        case 'MARKET':
+            req.services.trader.market(q.userId, q.symbol, q.side, q.quantity, q.newClientOrderId, q.newOrderRespType).then((resp) => {
+                console.log(resp)
+            }).catch(next)
+            break
+        case 'LIMIT':
+            req.services.trader.limit(q.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType).then((resp) => {
+                console.log(resp)
+            }).catch(next)
+            break
+        case 'LIMIT_MAKER':
+            req.services.trader.limitMaker(q.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType).then((resp) => {
+                console.log(resp)
+            }).catch(next)
+            break
+    }
 })
 
 /**
@@ -36,9 +54,18 @@ router.delete('/api/v3/order', [
     parse.symbol,
     parse.optOrderId,
     parse.optOrigClientOrderId,
+    parse.orderIdOrOrigClOrdId,
     parse.optNewClientOrderId
-], (req, res) => {
-    res.send({})
+], (req, res, next) => {
+    if (req.query.orderId !== undefined) {
+        req.services.trader.cancelByOrderId(req.userId, req.query.symbol, req.query.orderId, req.query.newClientOrderId).then((order) => {
+            res.send(order)
+        }).catch(next)
+    } else {
+        req.services.trader.cancelByOrderId(req.userId, req.query.symbol, req.query.origClientOrderId, req.query.newClientOrderId).then((order) => {
+            res.send(order)
+        }).catch(next)
+    }
 })
 
 module.exports = router

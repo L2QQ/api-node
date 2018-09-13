@@ -23,7 +23,28 @@ function mandatory(query, param, regexp) {
         if (!regexp.test(query[param])) {
             throw errors.ILLEGAL_CHARS(param, regexp.source)
         }
-    }    
+    }
+}
+
+function optional(query, param, regexp) {
+    if (isUndefined(query[param])) {
+        return false
+    }
+    if (isEmpty(query[param])) {
+        throw errors.PARAM_EMPTY(param)
+    }
+    if (regexp) {
+        if (!regexp.test(query[param])) {
+            throw errors.ILLEGAL_CHARS(param, regexp.source)
+        }
+    }
+    return true
+}
+
+function assertExist(query, param) {
+    if (isUndefined(query[param])) {
+        throw errors.MANDATORY_PARAM_EMPTY_OR_MALFORMED(param)
+    }
 }
 
 function assertNotEmpty(query, param) {
@@ -42,6 +63,8 @@ module.exports = {
     isUndefined,
     isEmpty,
     mandatory,
+    optional,
+    assertExist,
     assertRegexp,
     assertNotEmpty,
 
@@ -76,19 +99,21 @@ module.exports = {
     },
 
     symbol(req, res, next) {
-        mandatory(req.query, 'symbol', /^[a-zA-Z0-9]{1,60}$/)
-        if (!Object.keys(req.marketsBySymbols).includes(symbol)) {
+        mandatory(req.query, 'symbol', /^[A-Z0-9_]{1,20}$/)
+        if (!Object.keys(req.marketsBySymbols).includes(req.query.symbol)) {
             throw errors.BAD_SYMBOL
         }
+        req.market = req.marketsBySymbols[req.query.symbol]
         next()
     },
 
     optSymbol(req, res, next) {
         if (exist(req.query.symbol)) {
-            mandatory(req.query, 'symbol', /^[a-zA-Z0-9]{1,60}$/)
-            if (!Object.keys(req.marketsBySymbols).includes(symbol)) {
+            mandatory(req.query, 'symbol', /^[A-Z0-9_]{1,20}$/)
+            if (!Object.keys(req.marketsBySymbols).includes(req.query.symbol)) {
                 throw errors.BAD_SYMBOL
             }
+            req.market = req.marketsBySymbols[req.query.symbol]
         }
         next()
     },
@@ -101,16 +126,16 @@ module.exports = {
         next()
     },
 
-    quantity(req, res, next) {
-        mandatory(req.query, 'quantity', /^[a-zA-Z0-9]{1,60}$/)
-        next()
-    },
-
     orderType(req, res, next) {
         mandatory(req.query, 'type', /^[a-zA-Z0-9]{1,60}$/)
         if (!['LIMIT', 'MARKET', 'LIMIT_MAKER'].includes(req.query.type)) {
-            throw errors.INVALID_SIDE()
+            throw errors.INVALID_ORDER_TYPE()
         }
+        next()
+    },
+
+    quantity(req, res, next) {
+        mandatory(req.query, 'quantity', /^([0-9]{1,20})(\\.[0-9]{1,20})?$/)
         next()
     },
 
@@ -123,6 +148,7 @@ module.exports = {
     },
 
     optNewClientOrderId(req, res, next) {
+        optional(req.query, 'newClientOrderId', /^[a-zA-Z0-9-_]{1,36}$/)
         next()
     },
 
@@ -135,19 +161,42 @@ module.exports = {
     },
 
     optNewOrderRespType(req, res, next) {
+        if (optional(req.query, 'newOrderRespType')) {
+            if (!['ACK', 'RESULT', 'FULL'].includes(req.query.newOrderRespType)) {
+                throw errors.INVALID_PARAMETER()
+            }
+        }
         next()
     },
 
     optOrderId(req, res, next) {
+        optional(req.query, 'orderId', /^[0-9]{1,20}$/)
         next()
     },
 
     optOrigClientOrderId(req, res, next) {
+        optional(req.query, 'origClientOrderId', /^[a-zA-Z0-9-_]{1,36}$/)
         next()
     },
 
-    optNewClientOrderId(req, res, next) {
+    orderIdOrOrigClOrdId(req, res, next) {
+        if (!req.query.orderId && !req.query.origClientOrderId) {
+            throw errors.MANDATORY_PARAM_EMPTY_OR_MALFORMED('orderId', 'origClientOrderId')
+        }
         next()
+    },
+
+    tradeAdditionalMandatory(req, res, next) {
+        switch (req.query.type) {
+            case 'MARKET':
+                break
+            case 'LIMIT':
+                assertExist(req.query, 'price')
+                break
+            case 'LIMIT_MAKER':
+                assertExist(req.query, 'price')
+                break
+        }
     },
 
     timestamp(req, res, next) {

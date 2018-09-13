@@ -1,6 +1,8 @@
 const errors = require('../errors')
+const parse = require('./parse')
 
 module.exports = (req, res, next) => {
+    parse.optional()
     if (!req.timestamp) {
         return next()
     }

@@ -9,13 +9,10 @@ const parse = require('../middlewares/parse')
  */
 router.get('/api/v3/order', [
     security.USER_DATA,
-    parse.symbol,
+    parse.optOrderId,
+    parse.optOrigClientOrderId,
+    parse.orderIdOrOrigClOrdId,
 ], (req, res, next) => {
-
-    if (req.query.orderId) {
-
-    } else if (req.query.clientOrderId)
-
     req.services.orders.openOrders().then((orders) => {
         res.send(orders)
     }).catch(next)
