@@ -1,6 +1,6 @@
 function error(code, message) {
     const err = new Error(message)
-    err.name = 'F2QQError'
+    err.name = 'L2QQError'
     err.code = code
     return err
 }
