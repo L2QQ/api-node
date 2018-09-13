@@ -16,23 +16,7 @@ router.get('/api/v1/exchangeInfo', [
         timezone: 'UTC',
         serverTime: Date.now(),
         exchangeFilters: [],
-        rateLimits: [
-            {
-                rateLimitType: 'REQUEST_WEIGHT',
-                interval: 'MINUTE',
-                limit: 1200
-            },
-            {
-                rateLimitType: 'ORDERS',
-                interval: 'SECOND',
-                limit: 10
-            },
-            {
-                rateLimitType: 'ORDERS',
-                interval: 'DAY',
-                limit: 100000
-            }
-        ],
+        rateLimits: req.config.rateLimits,
         symbols: req.config.markets.map(market => ({
             symbol: market.symbol,
             status: 'TRADING',
@@ -40,9 +24,9 @@ router.get('/api/v1/exchangeInfo', [
             baseAssetPrecision: 8,
             quoteAsset: market.quote,
             quotePrecision: 8,
-            orderTypes: [],
+            orderTypes: market.orderTypes,
             icebergAllowed: true,
-            filters: []
+            filters: market.filters
         }))
     })
 })

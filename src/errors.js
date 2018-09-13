@@ -135,7 +135,7 @@ module.exports = class {
         } else if (first) {
             return error(
                 -1102,
-                `Mandatory parameter '${param}' was not sent, was empty/null, or malformed`
+                `Mandatory parameter '${first}' was not sent, was empty/null, or malformed`
             )
         } else {
             return error(

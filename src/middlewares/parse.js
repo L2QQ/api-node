@@ -67,6 +67,7 @@ module.exports = {
     assertExist,
     assertRegexp,
     assertNotEmpty,
+    exist,
 
     interval(req, res, next) {
         mandatory(req.query, 'interval')
@@ -101,7 +102,7 @@ module.exports = {
     symbol(req, res, next) {
         mandatory(req.query, 'symbol', /^[A-Z0-9_]{1,20}$/)
         if (!Object.keys(req.marketsBySymbols).includes(req.query.symbol)) {
-            throw errors.BAD_SYMBOL
+            throw errors.BAD_SYMBOL()
         }
         req.market = req.marketsBySymbols[req.query.symbol]
         next()
@@ -119,7 +120,7 @@ module.exports = {
     },
 
     side(req, res, next) {
-        mandatory(req.query, 'side', /^[a-zA-Z0-9]{1,60}$/)
+        mandatory(req.query, 'side', /^[a-zA-Z]{1,36}$/)
         if (!['SELL', 'BUY'].includes(req.query.side)) {
             throw errors.INVALID_SIDE()
         }
@@ -127,15 +128,15 @@ module.exports = {
     },
 
     orderType(req, res, next) {
-        mandatory(req.query, 'type', /^[a-zA-Z0-9]{1,60}$/)
-        if (!['LIMIT', 'MARKET', 'LIMIT_MAKER'].includes(req.query.type)) {
+        mandatory(req.query, 'type', /^[a-zA-Z_]{1,20}$/)
+        if (!['LIMIT', 'MARKET', 'STOP_LOSS', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT', 'TAKE_PROFIT_LIMIT', 'LIMIT_MAKER'].includes(req.query.type)) {
             throw errors.INVALID_ORDER_TYPE()
         }
         next()
     },
 
     quantity(req, res, next) {
-        mandatory(req.query, 'quantity', /^([0-9]{1,20})(\\.[0-9]{1,20})?$/)
+        mandatory(req.query, 'quantity', /^([0-9]{1,20})(.[0-9]{1,20})?$/)
         next()
     },
 
@@ -144,6 +145,7 @@ module.exports = {
     },
 
     optPrice(req, res, next) {
+        optional(req.query, 'price', /^([0-9]{1,20})(.[0-9]{1,20})?$/)
         next()
     },
 
@@ -197,10 +199,15 @@ module.exports = {
                 assertExist(req.query, 'price')
                 break
         }
+        next()
     },
 
     timestamp(req, res, next) {
         mandatory(req.query, 'timestamp', /^[0-9]{1,20}$/)
+        if (next) next()
+    },
+
+    optRecvWindow(req, res, next) {
         if (next) next()
     },
 
