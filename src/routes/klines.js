@@ -4,7 +4,7 @@ const express = require('express')
 const router = express.Router()
 
 const security = require('../security')
-const parse = require('./utils/parse')
+const parse = require('../middlewares/parse')
 
 /**
  * Kline/candlestick bars for a symbol. Klines are uniquely identified by their open time.
@@ -16,8 +16,8 @@ router.get('/api/v1/klines', [
     security.NONE,
     parse.symbol,
     parse.interval,
-    parse.time('startTime'),
-    parse.time('endTime'),
+    parse.optTime('startTime'),
+    parse.optTime('endTime'),
     parse.limit(500, 1000)
 ], (req, res, next) => {
     req.services.ohlcv.bars(

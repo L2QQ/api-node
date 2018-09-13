@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const security = require('../security')
-const parse = require('./utils/parse')
+const parse = require('../middlewares/parse')
 
 /**
  * Send in a new order.
@@ -12,17 +12,18 @@ const parse = require('./utils/parse')
 router.post('/api/v3/order', [
     security.TRADE,
     parse.symbol,
-    parse.orderSide,
+    parse.side,
     parse.orderType,
-    parse.optionalTimeInForce,
+    parse.optTimeInForce,
     parse.quantity,
-    parse.optionalPrice,
-    parse.optionalClientOrderId,
-    parse.newOrderRespType
+    parse.optPrice,
+    parse.optNewClientOrderId,
+    parse.optStopPrice,
+    parse.optIcebergQty,
+    parse.optNewOrderRespType
 ], (req, res) => {
     res.send({})
 })
-
 
 /**
  * Cancel an active order.
@@ -33,7 +34,9 @@ router.post('/api/v3/order', [
 router.delete('/api/v3/order', [
     security.TRADE,
     parse.symbol,
-    parse.orderIdOrClientOrderId
+    parse.optOrderId,
+    parse.optOrigClientOrderId,
+    parse.optNewClientOrderId
 ], (req, res) => {
     res.send({})
 })

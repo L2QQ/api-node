@@ -2,14 +2,14 @@ const express = require('express')
 const router = express.Router()
 
 const security = require('../security')
-const parse = require('./utils/parse')
+const parse = require('../middlewares/parse')
 
 /**
  * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#24hr-ticker-price-change-statistics
  */
 router.get('/api/v1/ticker/24hr', [
     security.NONE,
-    parse.optionalSymbol
+    parse.optSymbol
 ], (req, res) => {
     res.send({})
 })
@@ -19,7 +19,7 @@ router.get('/api/v1/ticker/24hr', [
  */
 router.get('/api/v3/ticker/price', [
     security.NONE,
-    parse.optionalSymbol
+    parse.optSymbol
 ], (req, res) => {
     res.send({})
 })
@@ -29,7 +29,7 @@ router.get('/api/v3/ticker/price', [
  */
 router.get('/api/v3/ticker/bookTicker', [
     security.NONE,
-    parse.optionalSymbol
+    parse.optSymbol
 ], (req, res) => {
     res.send({})
 })

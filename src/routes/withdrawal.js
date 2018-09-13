@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const security = require('../security')
-const parse = require('./utils/parse')
+const parse = require('../middlewares/parse')
 
 router.post('/wapi/v3/withdraw.html', [
     security.USER_DATA

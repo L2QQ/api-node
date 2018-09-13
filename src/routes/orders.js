@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const security = require('../security')
-const parse = require('./utils/parse')
+const parse = require('../middlewares/parse')
 
 /**
  * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#query-order-user_data
@@ -10,7 +10,6 @@ const parse = require('./utils/parse')
 router.get('/api/v3/order', [
     security.USER_DATA,
     parse.symbol,
-    parse.orderIdOrClientOrderId
 ], (req, res, next) => {
 
     if (req.query.orderId) {
@@ -27,7 +26,7 @@ router.get('/api/v3/order', [
  */
 router.get('/api/v3/openOrders', [
     security.USER_DATA,
-    parse.optionalSymbol
+    parse.optSymbol
 ], (req, res, next) => {
     req.services.orders.openOrders(req.userId, req.query.symbol).then((orders) => {
         res.send(orders)

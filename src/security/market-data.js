@@ -1,4 +1,4 @@
-const utils = require('./utils')
+const utils = require('./common')
 const errors = require('../errors')
 
 module.exports = (req, res, next) => {

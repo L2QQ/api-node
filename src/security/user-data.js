@@ -1,4 +1,4 @@
-const utils = require('./utils')
+const utils = require('./common')
 
 module.exports = (req, res, next) => {
     utils.handleSign(req).then((key) => {

@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const sequrity = require('../security')
-const parse = require('./utils/parse')
+const parse = require('../middlewares/parse')
 const format = require('./utils/format')
 
 /**
@@ -15,7 +15,7 @@ router.get('/api/v1/historicalTrades', [
     sequrity.MARKET_DATA,
     parse.symbol,
     parse.limit(500, 1000),
-    parse.optionalId('fromId')
+    parse.optId('fromId')
 ], (req, res, next) => {
     req.services.trades.trades(
         req.query.symbol,

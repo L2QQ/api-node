@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const security = require('../security')
-const parse = require('./utils/parse')
+const parse = require('../middlewares/parse')
 
 /**
  * Start a new user data stream. The stream will close after 60 minutes unless a keepalive is sent.
