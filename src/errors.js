@@ -12,51 +12,100 @@ module.exports = class APIError extends Error {
      */
 
     static UNKNOWN() {
-
+        return new APIError(
+            400,
+            -1000,
+            `An unknown error occured while processing the request.`
+        )
     }
 
     static DISCONNECTED() {
-
+        return new APIError(
+            400,
+            -1001,
+            `Internal error; unable to process your request. Please try again.`
+        )
     }
 
     static UNAUTHORIZED() {
-
+        return new APIError(
+            400,
+            -1001,
+            `Internal error; unable to process your request. Please try again.`
+        )
     }
 
     static TOO_MANY_REQUESTS() {
-
+        return new APIError(
+            429,
+            -1003,
+            `Too many requests; please use the websocket for live updates.`
+        )
     }
 
     static UNEXPECTED_RESP() {
-
+        return new APIError(
+            504,
+            -1006,
+            `An unexpected response was received from the message bus. Execution status unknown.`
+        )
     }
 
     static TIMEOUT() {
-
+        return new APIError(
+            504,
+            -1007,
+            `Timeout waiting for response from backend server. Send status unknown; execution status unknown.`
+        )
     }
 
     static UNKNOWN_ORDER_COMPOSITION() {
-
+        return new APIError(
+            400,
+            -1014,
+            `Unsupported order combination.`
+        )
     }
 
     static TOO_MANY_ORDERS() {
-
+        return new APIError(
+            400,
+            -1015,
+            `Too many new orders.`
+        )
     }
 
     static SERVICE_SHUTTING_DOWN() {
-
+        return new APIError(
+            400,
+            -1016,
+            `This service is no longer available.`
+        )
     }
 
     static UNSUPPORTED_OPERATION() {
-
+        return new APIError(
+            400,
+            -1020,
+            `This operation is not supported.`
+        )
     }
 
     static INVALID_TIMESTAMP() {
-
+        // Timestamp for this request was 1000ms ahead of the server's time.
+        return new APIError(
+            400,
+            -1021,
+            `Timestamp for this request is outside of the recvWindow.`
+        )
     }
 
     static INVALID_SIGNATURE() {
-
+        return new APIError(
+            400,
+            -1022,
+            `Signature for this request is not valid.`
+        )
     }
 
     /**
@@ -80,7 +129,11 @@ module.exports = class APIError extends Error {
     }
 
     static TOO_MANY_PARAMETERS() {
-
+        return new APIError(
+            400,
+            -1101,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static MANDATORY_PARAM_EMPTY_OR_MALFORMED(param) {
@@ -92,11 +145,19 @@ module.exports = class APIError extends Error {
     }
 
     static UNKNOWN_PARAM() {
-
+        return new APIError(
+            400,
+            -1103,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static UNREAD_PARAMETERS() {
-
+        return new APIError(
+            400,
+            -1104,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static PARAM_EMPTY(param) {
@@ -108,17 +169,75 @@ module.exports = class APIError extends Error {
     }
 
     static PARAM_NOT_REQUIRED() {
-
+        return new APIError(
+            400,
+            -1106,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
-    
-
     static BAD_PRECISION() {
-
+        return new APIError(
+            400,
+            -1111,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static NO_DEPTH() {
+        return new APIError(
+            400,
+            -1112,
+            `Invalid API-key, IP, or permissions for action.`
+        )
+    }
 
+    static TIF_NOT_REQUIRED() {
+        return new APIError(
+            400,
+            -1114,
+            `Invalid API-key, IP, or permissions for action.`
+        )
+    }
+
+    static INVALID_TIF() {
+        return new APIError(
+            400,
+            -1115,
+            `Invalid API-key, IP, or permissions for action.`
+        )
+    }
+
+    static INVALID_ORDER_TYPE() {
+        return new APIError(
+            400,
+            -1116,
+            `Invalid API-key, IP, or permissions for action.`
+        )
+    }
+
+    static INVALID_SIDE() {
+        return new APIError(
+            400,
+            -1117,
+            `Invalid API-key, IP, or permissions for action.`
+        )
+    }
+
+    static EMPTY_NEW_CL_ORD_ID() {
+        return new APIError(
+            400,
+            -1118,
+            `Invalid API-key, IP, or permissions for action.`
+        )
+    }
+
+    static EMPTY_ORG_CL_ORD_ID() {
+        return new APIError(
+            400,
+            -1119,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static BAD_INTERVAL(param) {
@@ -138,19 +257,35 @@ module.exports = class APIError extends Error {
     }
 
     static INVALID_LISTEN_KEY() {
-
+        return new APIError(
+            400,
+            -1125,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static MORE_THAN_XX_HOURS() {
-
+        return new APIError(
+            400,
+            -1127,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static OPTIONAL_PARAMS_BAD_COMBO() {
-
+        return new APIError(
+            400,
+            -1128,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static INVALID_PARAMETER() {
-
+        return new APIError(
+            400,
+            -1130,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     /**
@@ -158,15 +293,27 @@ module.exports = class APIError extends Error {
      */
 
     static NEW_ORDER_REJECTED() {
-
+        return new APIError(
+            400,
+            -2010,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static CANCEL_REJECTED() {
-
+        return new APIError(
+            400,
+            -2011,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static NO_SUCH_ORDER() {
-        
+        return new APIError(
+            400,
+            -2013,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 
     static BAD_API_KEY_FMT() {
@@ -186,6 +333,10 @@ module.exports = class APIError extends Error {
     }
 
     static NO_TRADING_WINDOW() {
-
+        return new APIError(
+            400,
+            -2016,
+            `Invalid API-key, IP, or permissions for action.`
+        )
     }
 }
