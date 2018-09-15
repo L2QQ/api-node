@@ -17,18 +17,14 @@ function statusCode(code) {
 }
 
 module.exports = (err, req, res, next) => {
-    if (process.env.NODE_ENV !== 'production') {
-        console.error(err)
-    }
+    console.error(err)
 
     const code = parseInt(err.code)
-    if (!isNaN(code)) {
-        if (canSend(code)) {
-            return res.status(statusCode(code)).send({
-                code: err.code,
-                msg: err.message
-            })
-        }
+    if (!isNaN(code) && canSend(code)) {
+        return res.status(statusCode(code)).send({
+            code: err.code,
+            msg: err.message
+        })
     }
 
     res.set('Content-Type', 'text/plain')

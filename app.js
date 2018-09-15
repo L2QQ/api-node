@@ -1,5 +1,8 @@
 require('colors')
 console.log('🤖 REST API'.bold)
+if (process.env.NODE_ENV === 'production') {
+    console.log('In production'.bold.cyan)
+}
 
 const express = require('express')
 const app = express()
@@ -9,8 +12,9 @@ app.services = {}
 const services = require('../services-node/src/wrappers')
 const commander = new services.Commander(parseInt(process.env.COMMANDER_PORT) || 9040)
 commander.on('config', (config) => {
-    console.log('Config changed'.magenta)
-
+    console.log('Commander config updated')
+    console.log('Update services wrappers')
+    
     app.services.account = new services.Account(config.services.account.port)
     app.services.apikeys = new services.APIKeys(config.services.apikeys.port)
     app.services.market = new services.Market(config.services.market.port)
@@ -55,7 +59,6 @@ app.use(require('./src/routes/trade'))
 app.use(require('./src/routes/orders'))
 app.use(require('./src/routes/user'))
 app.use(require('./src/routes/uds'))
-app.use(require('./src/routes/withdrawal'))
 
 app.use((req, res) => {
     res.set('Content-Type', 'text/plain').status(404).send("🤖 L2QQ REST API")
@@ -64,9 +67,20 @@ app.use((req, res) => {
 app.use(require('./src/middlewares/errors'))
 
 commander.once('config', () => {
-    console.log('Took config once'.red)
+    const server = require('http').createServer(app)
     const port = parseInt(process.env.PORT) || 9000
-    app.listen(port, () => {
-        console.log('Listening on:', String(port).green, '\n')
+    server.listen(port, () => {
+        console.log(`Listening on port: ${server.address().port}`.green.bold)
+    })
+
+    process.on('SIGINT', () => {
+        console.log('SIGINT signal received'.red.bold)
+        server.close((err) => {
+            if (err) {
+                console.error(err)
+                process.exit(1)
+            }
+            process.exit(0)
+        })
     })
 })

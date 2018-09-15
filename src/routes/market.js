@@ -50,6 +50,7 @@ router.get('/api/v1/trades', [
         req.query.symbol,
         req.query.limit
     ).then((trades) => {
+        console.log(trades)
         res.send(trades.map(format.trade(req.market)))
     }).catch(next)
 })

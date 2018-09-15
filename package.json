@@ -30,5 +30,6 @@
     "pg-promise": "^8.4.6",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5"
-  }
+  },
+  "devDependencies": {}
 }
