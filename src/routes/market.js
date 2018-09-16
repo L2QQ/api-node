@@ -81,7 +81,7 @@ router.get('/api/v1/historicalTrades', [
     parse.limit(500, 1000),
     parse.optId('fromId')
 ], (req, res, next) => {
-    req.services.trades.trades(
+    req.services.market.history(
         req.query.symbol,
         req.query.limit,
         req.query.fromId

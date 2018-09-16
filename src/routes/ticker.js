@@ -10,7 +10,7 @@ const parse = require('../middlewares/parse')
 router.get('/api/v1/ticker/24hr', [
     security.NONE,
     parse.optSymbol
-], (req, res) => {
+], (req, res, next) => {
     res.send({})
 })
 
@@ -20,8 +20,12 @@ router.get('/api/v1/ticker/24hr', [
 router.get('/api/v3/ticker/price', [
     security.NONE,
     parse.optSymbol
-], (req, res) => {
-    res.send({})
+], (req, res, next) => {
+    if (req.symbol) {
+        req.services.market.priceTicker(req.symbol).then(t => res.send(t)).catch(next)
+    } else {
+        req.services.market.priceTickers().then(t => res.send(t)).catch(next)
+    }
 })
 
 /**
@@ -30,8 +34,12 @@ router.get('/api/v3/ticker/price', [
 router.get('/api/v3/ticker/bookTicker', [
     security.NONE,
     parse.optSymbol
-], (req, res) => {
-    res.send({})
+], (req, res, next) => {
+    if (req.symbol) {
+        req.services.market.bookTicker(req.symbol).then(t => res.send(t)).catch(next)
+    } else {
+        req.services.market.bookTickers().then(t => res.send(t)).catch(next)
+    }
 })
 
 module.exports = router

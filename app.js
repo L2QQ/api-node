@@ -22,7 +22,6 @@ commander.on('config', (config) => {
     app.services.orders = new services.Orders(config.services.orders.port)
     app.services.ticker = new services.Ticker(config.services.ticker.port)
     app.services.trader = new services.Trader(config.services.trader.port)
-    app.services.trades = new services.Trades(config.services.trades.port)
     app.services.uds = new services.UDS(config.services.uds.port)
 
     marketsBySymbols = config.markets.reduce((acc, cur) => {
