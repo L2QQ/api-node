@@ -105,6 +105,7 @@ module.exports = {
             throw errors.BAD_SYMBOL()
         }
         req.market = req.marketsBySymbols[req.query.symbol]
+        req.symbol = req.query.symbol
         next()
     },
 
@@ -115,6 +116,7 @@ module.exports = {
                 throw errors.BAD_SYMBOL
             }
             req.market = req.marketsBySymbols[req.query.symbol]
+            req.symbol = req.query.symbol
         }
         next()
     },

@@ -28,19 +28,16 @@ router.post('/api/v3/order', [
     switch (q.type) {
         case 'MARKET':
             req.services.trader.market(req.userId, q.symbol, q.side, q.quantity, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
-                console.log(resp)
                 res.send(resp)
             }).catch(next)
             break
         case 'LIMIT':
             req.services.trader.limit(req.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
-                console.log(resp)
                 res.send(resp)
             }).catch(next)
             break
         case 'LIMIT_MAKER':
             req.services.trader.limitMaker(req.userId, q.symbol, q.side, q.quantity, q.price, q.newClientOrderId, q.newOrderRespType, q.signedMessage).then((resp) => {
-                console.log(resp)
                 res.send(resp)
             }).catch(next)
             break
@@ -66,9 +63,11 @@ router.delete('/api/v3/order', [
             res.send(order)
         }).catch(next)
     } else {
+        /*
         req.services.trader.cancelByOrderId(req.userId, req.query.symbol, req.query.origClientOrderId, req.query.newClientOrderId).then((order) => {
             res.send(order)
         }).catch(next)
+        */
     }
 })
 

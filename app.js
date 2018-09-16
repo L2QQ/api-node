@@ -14,7 +14,7 @@ const commander = new services.Commander(parseInt(process.env.COMMANDER_PORT) ||
 commander.on('config', (config) => {
     console.log('Commander config updated')
     console.log('Update services wrappers')
-    
+
     app.services.account = new services.Account(config.services.account.port)
     app.services.apikeys = new services.APIKeys(config.services.apikeys.port)
     app.services.market = new services.Market(config.services.market.port)
@@ -32,7 +32,11 @@ commander.on('config', (config) => {
 })
 
 const morgan = require('morgan')
-app.use(morgan('tiny'))
+if (process.env.NODE_ENV === 'production') {
+    app.use(morgan('tiny'))
+} else {
+    app.use(morgan('dev'))
+}
 
 app.use((req, res, next) => {
     commander.config().then((config) => {
@@ -51,7 +55,6 @@ app.use(require('./src/middlewares/timing'))
 app.use(require('./src/routes/ping'))
 app.use(require('./src/routes/info'))
 app.use(require('./src/routes/market'))
-app.use(require('./src/routes/history'))
 app.use(require('./src/routes/ticker'))
 app.use(require('./src/routes/klines'))
 app.use(require('./src/routes/trade'))
@@ -70,7 +73,7 @@ commander.once('config', () => {
     const server = require('http').createServer(app)
     const port = parseInt(process.env.PORT) || 9000
     server.listen(port, () => {
-        console.log(`Listening on port: ${server.address().port}`.green.bold)
+        console.log(`Listening on: ${server.address().port}`.green.bold)
     })
 
     process.on('SIGINT', () => {

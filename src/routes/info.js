@@ -19,13 +19,13 @@ router.get('/api/v1/exchangeInfo', [
         rateLimits: req.config.rateLimits,
         symbols: req.config.markets.map(market => ({
             symbol: market.symbol,
-            status: 'TRADING',
+            status: market.status,
             baseAsset: market.base,
             baseAssetPrecision: 8,
             quoteAsset: market.quote,
             quotePrecision: 8,
             orderTypes: market.orderTypes,
-            icebergAllowed: true,
+            icebergAllowed: false,
             filters: market.filters
         }))
     })

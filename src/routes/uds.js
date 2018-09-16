@@ -27,7 +27,7 @@ router.post('/api/v1/userDataStream', [
 router.put('/api/v1/userDataStream', [
     security.USER_STREAM, 
     parse.listenKey
-], (req, res) => {
+], (req, res, next) => {
     req.services.uds.keepAlive(req.userId, req.query.listenKey).then(() => {
         res.send({})
     }).catch(next)
@@ -41,7 +41,7 @@ router.put('/api/v1/userDataStream', [
 router.delete('/api/v1/userDataStream', [
     security.USER_STREAM, 
     parse.listenKey
-], (req, res) => {
+], (req, res, next) => {
     req.services.uds.close(req.userId, req.query.listenKey).then(() => {
         res.send({})
     }).catch(next)

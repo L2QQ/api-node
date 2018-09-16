@@ -1,11 +1,26 @@
-const Big = require('big.js')
-
 const express = require('express')
 const router = express.Router()
 
 const security = require('../security')
 const parse = require('../middlewares/parse')
-const format = require('./utils/format')
+
+const Big = require('big.js')
+
+function format(trade) {
+    if (Array.isArray(trade)) {
+        return trade.map(format)
+    } else if (trade != null && typeof trade === 'object') {
+        return {
+            id: trade.id,
+            price: Big(trade.price).toFixed(8),
+            qty: Big(trade.quantity).toFixed(8),
+            time: trade.createdAt,
+            isBuyerMaker: trade.isBuyerMaker,
+            isBestMatch: true
+        }
+    }
+    return trade
+}
 
 /**
  * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#market-data-endpoints
@@ -50,8 +65,28 @@ router.get('/api/v1/trades', [
         req.query.symbol,
         req.query.limit
     ).then((trades) => {
-        console.log(trades)
-        res.send(trades.map(format.trade(req.market)))
+        res.send(format(trades))
+    }).catch(next)
+})
+
+/**
+ * Get older trades.
+ * 
+ * @binance https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#old-trade-lookup-market_data
+ * @weight 5
+ */
+router.get('/api/v1/historicalTrades', [
+    security.MARKET_DATA,
+    parse.symbol,
+    parse.limit(500, 1000),
+    parse.optId('fromId')
+], (req, res, next) => {
+    req.services.trades.trades(
+        req.query.symbol,
+        req.query.limit,
+        req.query.fromId
+    ).then((trades) => {
+        res.send(format(trades))
     }).catch(next)
 })
 
