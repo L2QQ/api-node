@@ -1,7 +1,10 @@
-function error(code, message) {
+function error(code, message, debug) {
     const err = new Error(message)
     err.name = 'L2QQERROR'
     err.code = code
+    if (debug) {
+        err.debug = debug
+    }
     return err
 }
 

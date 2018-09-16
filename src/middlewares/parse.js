@@ -224,7 +224,7 @@ module.exports = {
     },
 
     optSignedMessage(req, res, next) {
-        optional(req.query, 'signedMessage', /^[A-Fa-f0-9]{2,120}$/)
+        optional(req.query, 'signedMessage', /^[A-Fa-f0-9]{2,2048}$/)
         next()
     },
 
