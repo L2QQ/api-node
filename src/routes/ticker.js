@@ -11,7 +11,11 @@ router.get('/api/v1/ticker/24hr', [
     security.NONE,
     parse.optSymbol
 ], (req, res, next) => {
-    res.send({})
+    if (req.symbol) {
+        req.services.ticker.ticker(req.symbol).then(t => res.send(t)).catch(next)
+    } else {
+        req.services.ticker.tickers().then(t => res.send(t)).catch(next)
+    }
 })
 
 /**
