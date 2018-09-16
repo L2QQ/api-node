@@ -71,4 +71,17 @@ router.delete('/api/v3/order', [
     }
 })
 
+router.post('/api/v4/presign', [
+    security.TRADE,
+    parse.symbol,
+    parse.side,
+    parse.orderType,
+    parse.quantity,
+    parse.optPrice,
+    parse.tradeAdditionalMandatory
+], (req, res, next) => {
+    const q = req.query
+    req.services.trader.preSign(req.userId, q.symbol, q.type, q.side, q.quantity, q.price).then(r => res.send(r)).catch(next)
+})
+
 module.exports = router
