@@ -61,6 +61,7 @@ app.use(require('./src/routes/trade'))
 app.use(require('./src/routes/orders'))
 app.use(require('./src/routes/user'))
 app.use(require('./src/routes/uds'))
+app.use(require('./src/routes/auth'))
 
 app.use((req, res) => {
     res.set('Content-Type', 'text/plain').status(404).send("🤖 L2QQ REST API")

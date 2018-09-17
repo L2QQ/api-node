@@ -3,7 +3,14 @@ const rest = new binance.BinanceRest({
     key: '6YcvanPMhtFx2I0VMdU7mDaq6CXO5h04RU2MN2aekS8iTgjRBjT9QrHOOzWHvQhA',
     secret: 'MJaNpyqEo1dFAnwOIizf86nzPK82qQLegbJ3q5g7IEFIspvpQdIfBB4IBmUYxi2i'
 })
-rest._baseUrl = 'http://localhost:9000/'
+//rest._baseUrl = 'http://localhost:9000/'
+rest._baseUrl = 'http://142.93.32.105/'
+
+//account()
+//exchangeInfo()
+//pingAndTime()
+depth()
+trades()
 
 function account() {
     rest.account().then((res) => {
